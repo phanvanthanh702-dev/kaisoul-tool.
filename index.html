@@ -1,0 +1,4357 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0d12">
+  <meta name="description" content="KAISOUL TOOL - All-in-one utility toolkit">
+
+  <title>KAISOUL TOOL</title>
+
+  <style>
+    /* =========================================================
+       KAISOUL TOOL
+       FULL SINGLE-FILE FRONTEND
+       ========================================================= */
+
+    :root {
+      --bg: #0b0d12;
+      --bg-soft: #11141b;
+      --card: #151922;
+      --card-hover: #1b202b;
+      --border: rgba(255,255,255,.09);
+      --text: #f5f7fb;
+      --muted: #9299a8;
+      --accent: #7c5cff;
+      --accent-2: #9a83ff;
+      --danger: #ff5c6c;
+      --success: #35d07f;
+      --warning: #ffbf5c;
+      --shadow: 0 15px 45px rgba(0,0,0,.28);
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, rgba(124,92,255,.12), transparent 30%),
+        var(--bg);
+      color: var(--text);
+      font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      overflow-x: hidden;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    /* =========================================================
+       APP
+       ========================================================= */
+
+    #app {
+      min-height: 100vh;
+      padding-bottom: 88px;
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 28px));
+      margin: auto;
+    }
+
+    /* =========================================================
+       HEADER
+       ========================================================= */
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+      background: rgba(11,13,18,.82);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar-inner {
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      letter-spacing: -.5px;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--accent), #4d8dff);
+      box-shadow: 0 8px 25px rgba(124,92,255,.3);
+      font-size: 19px;
+    }
+
+    .brand-name {
+      font-size: 18px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 10px var(--success);
+    }
+
+    /* =========================================================
+       PAGES
+       ========================================================= */
+
+    .page {
+      display: none;
+      padding: 28px 0;
+      animation: pageIn .2s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes pageIn {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero {
+      padding: 42px 0 28px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(34px, 8vw, 62px);
+      line-height: .98;
+      letter-spacing: -3px;
+      margin-bottom: 14px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #fff, #a992ff, #72a7ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 650px;
+      margin: auto;
+      line-height: 1.6;
+    }
+
+    /* =========================================================
+       SEARCH
+       ========================================================= */
+
+    .search-wrap {
+      width: min(760px, 100%);
+      margin: 24px auto 0;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 62px;
+      padding: 0 18px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255,255,255,.045);
+      box-shadow: var(--shadow);
+      transition: .2s;
+    }
+
+    .search-box:focus-within {
+      border-color: rgba(124,92,255,.7);
+      box-shadow:
+        0 0 0 4px rgba(124,92,255,.1),
+        var(--shadow);
+    }
+
+    .search-icon {
+      font-size: 21px;
+      opacity: .75;
+    }
+
+    #globalSearch {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      color: var(--text);
+      background: transparent;
+      font-size: 16px;
+    }
+
+    #globalSearch::placeholder {
+      color: #777e8d;
+    }
+
+    .clear-search {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      color: var(--muted);
+      background: transparent;
+      display: none;
+    }
+
+    .clear-search:hover {
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+    }
+
+    .search-results {
+      margin-top: 12px;
+      text-align: left;
+    }
+
+    .search-result {
+      padding: 15px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 15px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: .15s;
+    }
+
+    .search-result:hover {
+      background: var(--card-hover);
+      transform: translateY(-1px);
+    }
+
+    .search-result-title {
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .search-result-desc {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .search-result-meta {
+      margin-top: 8px;
+      color: var(--accent-2);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    /* =========================================================
+       SECTION
+       ========================================================= */
+
+    .section {
+      margin-top: 30px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 850;
+    }
+
+    .section-subtitle {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    /* =========================================================
+       CARDS
+       ========================================================= */
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      background: linear-gradient(
+        145deg,
+        rgba(255,255,255,.045),
+        rgba(255,255,255,.018)
+      );
+      border-radius: var(--radius);
+      padding: 18px;
+      transition: .18s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      background: var(--card-hover);
+      border-color: rgba(255,255,255,.14);
+    }
+
+    .tool-card {
+      cursor: pointer;
+    }
+
+    .tool-icon {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: rgba(124,92,255,.12);
+      font-size: 21px;
+      margin-bottom: 13px;
+    }
+
+    .tool-card h3 {
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .tool-card p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    /* =========================================================
+       BUTTONS
+       ========================================================= */
+
+    .btn {
+      min-height: 42px;
+      padding: 0 15px;
+      border-radius: 12px;
+      color: var(--text);
+      background: var(--card);
+      border: 1px solid var(--border);
+      transition: .15s;
+    }
+
+    .btn:hover {
+      background: var(--card-hover);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: transparent;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-2);
+    }
+
+    .btn-danger {
+      background: rgba(255,92,108,.1);
+      color: #ff8792;
+    }
+
+    .btn-small {
+      min-height: 35px;
+      padding: 0 11px;
+      font-size: 12px;
+    }
+
+    /* =========================================================
+       CALCULATOR
+       ========================================================= */
+
+    .calculator {
+      width: min(440px, 100%);
+      margin: 20px auto;
+    }
+
+    .calc-display {
+      min-height: 105px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: #080a0e;
+      text-align: right;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .calc-expression {
+      color: var(--muted);
+      min-height: 24px;
+      font-size: 14px;
+    }
+
+    .calc-value {
+      font-size: 34px;
+      font-weight: 800;
+      margin-top: 7px;
+      white-space: nowrap;
+      overflow-x: auto;
+    }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .calc-btn {
+      min-height: 60px;
+      border-radius: 15px;
+      color: var(--text);
+      background: var(--card);
+      border: 1px solid var(--border);
+      font-size: 18px;
+    }
+
+    .calc-btn:hover {
+      background: var(--card-hover);
+    }
+
+    .calc-btn.operator {
+      color: var(--accent-2);
+    }
+
+    .calc-btn.equal {
+      background: var(--accent);
+    }
+
+    /* =========================================================
+       WORLD CLOCK
+       ========================================================= */
+
+    .clock-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .clock-card {
+      position: relative;
+    }
+
+    .clock-city {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .clock-time {
+      font-size: 34px;
+      font-weight: 850;
+      letter-spacing: -1px;
+      margin: 10px 0 2px;
+    }
+
+    .clock-date,
+    .clock-zone {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .remove-city {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 29px;
+      height: 29px;
+      border-radius: 50%;
+      color: var(--muted);
+      background: transparent;
+    }
+
+    .remove-city:hover {
+      color: var(--danger);
+      background: rgba(255,92,108,.08);
+    }
+
+    /* =========================================================
+       MODAL
+       ========================================================= */
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(0,0,0,.68);
+      backdrop-filter: blur(8px);
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      width: min(520px, 100%);
+      max-height: 85vh;
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: #11141b;
+      box-shadow: 0 30px 80px rgba(0,0,0,.5);
+      padding: 20px;
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    .modal-head h2 {
+      font-size: 20px;
+    }
+
+    .modal-close {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      color: var(--muted);
+      background: rgba(255,255,255,.05);
+    }
+
+    .city-search {
+      width: 100%;
+      height: 45px;
+      padding: 0 13px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      outline: 0;
+      color: var(--text);
+      background: rgba(255,255,255,.04);
+      margin-bottom: 12px;
+    }
+
+    .city-list {
+      display: grid;
+      gap: 7px;
+      max-height: 430px;
+      overflow: auto;
+    }
+
+    .city-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .city-option button {
+      color: var(--accent-2);
+      background: transparent;
+      font-weight: 700;
+    }
+
+    /* =========================================================
+       AI CHAT
+       ========================================================= */
+
+    .ai-shell {
+      width: min(900px, 100%);
+      margin: auto;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      overflow: hidden;
+      background: rgba(255,255,255,.025);
+      box-shadow: var(--shadow);
+    }
+
+    .ai-header {
+      min-height: 65px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ai-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ai-avatar {
+      width: 39px;
+      height: 39px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), #4d8dff);
+    }
+
+    .ai-title strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .ai-title span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .chat-messages {
+      height: min(58vh, 560px);
+      overflow-y: auto;
+      padding: 18px;
+    }
+
+    .message {
+      display: flex;
+      margin-bottom: 15px;
+    }
+
+    .message.user {
+      justify-content: flex-end;
+    }
+
+    .bubble {
+      max-width: min(760px, 88%);
+      padding: 12px 14px;
+      border-radius: 17px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      line-height: 1.55;
+      font-size: 14px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .message.user .bubble {
+      background: var(--accent);
+      border-color: transparent;
+    }
+
+    .bubble code {
+      padding: 2px 5px;
+      border-radius: 5px;
+      background: rgba(0,0,0,.28);
+      font-family: ui-monospace, monospace;
+    }
+
+    .bubble pre {
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 10px;
+      overflow: auto;
+      background: #080a0e;
+      border: 1px solid var(--border);
+    }
+
+    .chat-input-area {
+      padding: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .chat-input-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    #chatInput {
+      flex: 1;
+      min-height: 48px;
+      max-height: 150px;
+      resize: vertical;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      outline: 0;
+      padding: 13px;
+      color: var(--text);
+      background: rgba(255,255,255,.04);
+    }
+
+    #chatInput:focus {
+      border-color: rgba(124,92,255,.6);
+    }
+
+    .send-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      color: white;
+      background: var(--accent);
+      font-size: 18px;
+    }
+
+    .typing {
+      color: var(--muted);
+      font-size: 12px;
+      padding: 0 5px 10px;
+      display: none;
+    }
+
+    /* =========================================================
+       TOOL SECTIONS
+       ========================================================= */
+
+    .tool-section {
+      margin-top: 22px;
+    }
+
+    .tool-section h2 {
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+
+    /* =========================================================
+       DEVELOPER / CONSTRUCTION QUICK TOOLS
+       ========================================================= */
+
+    .utility-box {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--card);
+    }
+
+    .input {
+      width: 100%;
+      height: 45px;
+      padding: 0 13px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      outline: 0;
+      color: var(--text);
+      background: rgba(255,255,255,.04);
+    }
+
+    .textarea {
+      width: 100%;
+      min-height: 130px;
+      padding: 13px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      outline: 0;
+      color: var(--text);
+      background: rgba(255,255,255,.04);
+      resize: vertical;
+    }
+
+    .input:focus,
+    .textarea:focus {
+      border-color: rgba(124,92,255,.65);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .result-box {
+      margin-top: 12px;
+      padding: 13px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #080a0e;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      color: #dce1eb;
+      font-size: 13px;
+    }
+
+    /* =========================================================
+       BOTTOM NAV
+       ========================================================= */
+
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: max(10px, env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      z-index: 200;
+      width: min(680px, calc(100% - 20px));
+      min-height: 65px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 6px;
+      border: 1px solid var(--border);
+      border-radius: 21px;
+      background: rgba(17,20,27,.9);
+      backdrop-filter: blur(22px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.4);
+    }
+
+    .nav-btn {
+      min-width: 0;
+      border-radius: 15px;
+      color: var(--muted);
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      font-size: 10px;
+    }
+
+    .nav-btn .nav-icon {
+      font-size: 18px;
+    }
+
+    .nav-btn.active {
+      color: white;
+      background: rgba(124,92,255,.18);
+    }
+
+    /* =========================================================
+       TOAST
+       ========================================================= */
+
+    #toast {
+      position: fixed;
+      left: 50%;
+      bottom: 92px;
+      z-index: 1000;
+      transform: translate(-50%, 15px);
+      opacity: 0;
+      pointer-events: none;
+      padding: 11px 15px;
+      border-radius: 12px;
+      background: #202530;
+      border: 1px solid var(--border);
+      color: white;
+      font-size: 12px;
+      transition: .2s;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    /* =========================================================
+       ERROR BOUNDARY
+       ========================================================= */
+
+    #errorOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: #080a0e;
+    }
+
+    #errorOverlay.show {
+      display: grid;
+    }
+
+    .error-box {
+      width: min(650px, 100%);
+      padding: 25px;
+      border: 1px solid rgba(255,92,108,.35);
+      border-radius: 20px;
+      background: #151922;
+    }
+
+    .error-box h2 {
+      color: #ff7e89;
+      margin-bottom: 10px;
+    }
+
+    .error-box pre {
+      margin-top: 15px;
+      padding: 13px;
+      border-radius: 10px;
+      overflow: auto;
+      background: #080a0e;
+      color: #cfd4df;
+      font-size: 12px;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .clock-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: min(100% - 18px, 1180px);
+      }
+
+      .hero {
+        padding-top: 28px;
+      }
+
+      .hero h1 {
+        letter-spacing: -2px;
+      }
+
+      .grid,
+      .clock-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar-inner {
+        min-height: 58px;
+      }
+
+      .status {
+        display: none;
+      }
+
+      .page {
+        padding-top: 16px;
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .clock-time {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="app">
+
+  <!-- =======================================================
+       TOP BAR
+       ======================================================= -->
+
+  <header class="topbar">
+    <div class="container topbar-inner">
+
+      <div class="brand">
+        <div class="brand-logo">K</div>
+        <div class="brand-name">KAISOUL</div>
+      </div>
+
+      <div class="status">
+        <span class="status-dot"></span>
+        <span id="serverStatus">Checking...</span>
+      </div>
+
+    </div>
+  </header>
+
+
+  <!-- =======================================================
+       HOME
+       ======================================================= -->
+
+  <main id="homePage" class="page active">
+
+    <div class="container">
+
+      <section class="hero">
+
+        <h1>
+          <span class="gradient-text">KAISOUL</span>
+          TOOL
+        </h1>
+
+        <p>
+          Công cụ đa năng của KAISOUL — tìm kiếm, tính toán,
+          giờ quốc tế, developer tools, construction tools và AI.
+        </p>
+
+        <!-- GOOGLE-LIKE SEARCH, KHÔNG DÙNG GOOGLE -->
+
+        <div class="search-wrap">
+
+          <div class="search-box">
+
+            <span class="search-icon">⌕</span>
+
+            <input
+              id="globalSearch"
+              type="search"
+              autocomplete="off"
+              placeholder="Tìm kiếm trên KAISOUL..."
+              aria-label="Tìm kiếm trên KAISOUL"
+            >
+
+            <button
+              id="clearSearch"
+              class="clear-search"
+              type="button"
+              aria-label="Xóa tìm kiếm"
+            >
+              ×
+            </button>
+
+          </div>
+
+          <div id="searchResults" class="search-results"></div>
+
+        </div>
+
+      </section>
+
+
+      <section class="section">
+
+        <div class="section-head">
+          <div>
+            <div class="section-title">Truy cập nhanh</div>
+            <div class="section-subtitle">
+              Những chức năng chính của KAISOUL
+            </div>
+          </div>
+        </div>
+
+        <div class="grid">
+
+          <div class="card tool-card" data-page="calculator">
+            <div class="tool-icon">🧮</div>
+            <h3>Tính toán</h3>
+            <p>Máy tính và các công cụ tính toán nhanh.</p>
+          </div>
+
+          <div class="card tool-card" data-page="clock">
+            <div class="tool-icon">🌍</div>
+            <h3>Giờ quốc tế</h3>
+            <p>Theo dõi giờ của nhiều thành phố trên thế giới.</p>
+          </div>
+
+          <div class="card tool-card" data-page="tools">
+            <div class="tool-icon">🛠️</div>
+            <h3>Tools</h3>
+            <p>Device, Network, Developer và Construction.</p>
+          </div>
+
+          <div class="card tool-card" data-page="ai">
+            <div class="tool-icon">🤖</div>
+            <h3>KAISOUL AI</h3>
+            <p>Chatbot AI thông thường của KAISOUL.</p>
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <!-- =======================================================
+       CALCULATOR
+       ======================================================= -->
+
+  <main id="calculatorPage" class="page">
+
+    <div class="container">
+
+      <div class="section-head">
+        <div>
+          <div class="section-title">🧮 Tính toán</div>
+          <div class="section-subtitle">
+            Máy tính nhanh
+          </div>
+        </div>
+      </div>
+
+      <div class="calculator">
+
+        <div class="calc-display">
+          <div id="calcExpression" class="calc-expression"></div>
+          <div id="calcValue" class="calc-value">0</div>
+        </div>
+
+        <div class="calc-grid">
+
+          <button class="calc-btn" data-calc="clear">AC</button>
+          <button class="calc-btn" data-calc="back">⌫</button>
+          <button class="calc-btn operator" data-calc="%">%</button>
+          <button class="calc-btn operator" data-calc="/">÷</button>
+
+          <button class="calc-btn" data-calc="7">7</button>
+          <button class="calc-btn" data-calc="8">8</button>
+          <button class="calc-btn" data-calc="9">9</button>
+          <button class="calc-btn operator" data-calc="*">×</button>
+
+          <button class="calc-btn" data-calc="4">4</button>
+          <button class="calc-btn" data-calc="5">5</button>
+          <button class="calc-btn" data-calc="6">6</button>
+          <button class="calc-btn operator" data-calc="-">−</button>
+
+          <button class="calc-btn" data-calc="1">1</button>
+          <button class="calc-btn" data-calc="2">2</button>
+          <button class="calc-btn" data-calc="3">3</button>
+          <button class="calc-btn operator" data-calc="+">+</button>
+
+          <button class="calc-btn" data-calc="0">0</button>
+          <button class="calc-btn" data-calc=".">.</button>
+          <button class="calc-btn equal" data-calc="=">=</button>
+          <button class="calc-btn operator" data-calc="(">(</button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- =======================================================
+       WORLD CLOCK
+       ======================================================= -->
+
+  <main id="clockPage" class="page">
+
+    <div class="container">
+
+      <div class="section-head">
+
+        <div>
+          <div class="section-title">🌍 Giờ quốc tế</div>
+          <div class="section-subtitle">
+            Đồng hồ cập nhật theo thời gian thực
+          </div>
+        </div>
+
+        <button id="addCityBtn" class="btn btn-primary">
+          ＋ Thêm thành phố
+        </button>
+
+      </div>
+
+      <div id="clockGrid" class="clock-grid"></div>
+
+    </div>
+
+  </main>
+
+
+  <!-- =======================================================
+       TOOLS
+       ======================================================= -->
+
+  <main id="toolsPage" class="page">
+
+    <div class="container">
+
+      <div class="section-head">
+        <div>
+          <div class="section-title">🛠️ KAISOUL Tools</div>
+          <div class="section-subtitle">
+            Bộ công cụ tiện ích
+          </div>
+        </div>
+      </div>
+
+
+      <!-- DEVICE -->
+
+      <section class="tool-section">
+
+        <h2>📱 Device</h2>
+
+        <div class="grid">
+
+          <div class="card tool-card" id="deviceInfoBtn">
+            <div class="tool-icon">📱</div>
+            <h3>Device Info</h3>
+            <p>Thông tin trình duyệt và thiết bị.</p>
+          </div>
+
+          <div class="card tool-card" id="batteryBtn">
+            <div class="tool-icon">🔋</div>
+            <h3>Battery</h3>
+            <p>Kiểm tra pin nếu trình duyệt hỗ trợ.</p>
+          </div>
+
+          <div class="card tool-card" id="screenBtn">
+            <div class="tool-icon">🖥️</div>
+            <h3>Screen Test</h3>
+            <p>Kiểm tra độ phân giải màn hình.</p>
+          </div>
+
+          <div class="card tool-card" id="touchBtn">
+            <div class="tool-icon">👆</div>
+            <h3>Touch Test</h3>
+            <p>Kiểm tra cảm ứng.</p>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- NETWORK -->
+
+      <section class="tool-section">
+
+        <h2>🌐 Network</h2>
+
+        <div class="grid">
+
+          <div class="card tool-card" id="onlineBtn">
+            <div class="tool-icon">🌐</div>
+            <h3>Internet Status</h3>
+            <p>Kiểm tra trạng thái kết nối.</p>
+          </div>
+
+          <div class="card tool-card" id="pingBtn">
+            <div class="tool-icon">📡</div>
+            <h3>Ping</h3>
+            <p>Đo thời gian phản hồi endpoint.</p>
+          </div>
+
+          <div class="card tool-card" id="userAgentBtn">
+            <div class="tool-icon">🧩</div>
+            <h3>User-Agent</h3>
+            <p>Xem User-Agent hiện tại.</p>
+          </div>
+
+          <div class="card tool-card" id="httpBtn">
+            <div class="tool-icon">🔗</div>
+            <h3>HTTP Status</h3>
+            <p>Kiểm tra endpoint của server.</p>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- DEVELOPER -->
+
+      <section class="tool-section">
+
+        <h2>👨‍💻 Developer</h2>
+
+        <div class="grid">
+
+          <div class="card tool-card" id="jsonFormatterBtn">
+            <div class="tool-icon">{ }</div>
+            <h3>JSON Formatter</h3>
+            <p>Format và kiểm tra JSON.</p>
+          </div>
+
+          <div class="card tool-card" id="base64Btn">
+            <div class="tool-icon">64</div>
+            <h3>Base64</h3>
+            <p>Encode / Decode Base64.</p>
+          </div>
+
+          <div class="card tool-card" id="uuidBtn">
+            <div class="tool-icon">🆔</div>
+            <h3>UUID Generator</h3>
+            <p>Tạo UUID ngẫu nhiên.</p>
+          </div>
+
+          <div class="card tool-card" id="regexBtn">
+            <div class="tool-icon">.*</div>
+            <h3>Regex Tester</h3>
+            <p>Kiểm tra Regular Expression.</p>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- CONSTRUCTION -->
+
+      <section class="tool-section">
+
+        <h2>🏗️ Construction</h2>
+
+        <div class="grid">
+
+          <div class="card tool-card" id="concreteBtn">
+            <div class="tool-icon">🧱</div>
+            <h3>Bê tông</h3>
+            <p>Tính thể tích bê tông.</p>
+          </div>
+
+          <div class="card tool-card" id="steelBtn">
+            <div class="tool-icon">🔩</div>
+            <h3>Thép</h3>
+            <p>Tính khối lượng thép.</p>
+          </div>
+
+          <div class="card tool-card" id="excavationBtn">
+            <div class="tool-icon">⛏️</div>
+            <h3>Đào đất</h3>
+            <p>Tính khối lượng đào.</p>
+          </div>
+
+          <div class="card tool-card" id="volumeBtn">
+            <div class="tool-icon">📐</div>
+            <h3>Khối lượng</h3>
+            <p>Các phép tính hình học cơ bản.</p>
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <!-- =======================================================
+       AI
+       ======================================================= -->
+
+  <main id="aiPage" class="page">
+
+    <div class="container">
+
+      <div class="ai-shell">
+
+        <div class="ai-header">
+
+          <div class="ai-title">
+
+            <div class="ai-avatar">🤖</div>
+
+            <div>
+              <strong>KAISOUL AI</strong>
+              <span>AI Assistant</span>
+            </div>
+
+          </div>
+
+          <button
+            id="newChatBtn"
+            class="btn btn-small"
+            type="button"
+          >
+            ＋ Chat mới
+          </button>
+
+        </div>
+
+
+        <div id="chatMessages" class="chat-messages">
+
+          <div class="message">
+
+            <div class="bubble">
+              Xin chào! Tôi là <strong>KAISOUL AI</strong>.<br><br>
+              Bạn có thể hỏi tôi về kiến thức, lập trình,
+              công việc, học tập hoặc các vấn đề khác.
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div id="typingIndicator" class="typing">
+          KAISOUL AI đang suy nghĩ...
+        </div>
+
+
+        <div class="chat-input-area">
+
+          <div class="chat-input-row">
+
+            <textarea
+              id="chatInput"
+              placeholder="Nhập tin nhắn..."
+              rows="1"
+            ></textarea>
+
+            <button
+              id="sendChatBtn"
+              class="send-btn"
+              type="button"
+              aria-label="Gửi"
+            >
+              ➤
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<!-- =========================================================
+     CITY MODAL
+     ========================================================= -->
+
+<div id="cityModal" class="modal-backdrop">
+
+  <div class="modal">
+
+    <div class="modal-head">
+
+      <h2>🌍 Thêm thành phố</h2>
+
+      <button
+        id="closeCityModal"
+        class="modal-close"
+        type="button"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <input
+      id="citySearch"
+      class="city-search"
+      type="search"
+      placeholder="Tìm thành phố..."
+    >
+
+    <div id="cityList" class="city-list"></div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     TOOL MODAL
+     ========================================================= -->
+
+<div id="toolModal" class="modal-backdrop">
+
+  <div class="modal">
+
+    <div class="modal-head">
+
+      <h2 id="toolModalTitle">Tool</h2>
+
+      <button
+        id="closeToolModal"
+        class="modal-close"
+        type="button"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div id="toolModalContent"></div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     TOAST
+     ========================================================= -->
+
+<div id="toast"></div>
+
+
+<!-- =========================================================
+     ERROR OVERLAY
+     ========================================================= -->
+
+<div id="errorOverlay">
+
+  <div class="error-box">
+
+    <h2>KAISOUL gặp lỗi</h2>
+
+    <p>
+      Một lỗi JavaScript đã xảy ra. Bạn có thể tải lại trang
+      để thử lại.
+    </p>
+
+    <pre id="errorText"></pre>
+
+    <br>
+
+    <button
+      class="btn btn-primary"
+      onclick="location.reload()"
+    >
+      Tải lại KAISOUL
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
+
+<script>
+
+"use strict";
+
+/* =========================================================
+   KAISOUL CONFIG
+   ========================================================= */
+
+const KAISOUL_CONFIG = {
+  appName: "KAISOUL TOOL",
+  apiEndpoint: "/api/chat"
+};
+
+
+/* =========================================================
+   SEARCH DATA
+   =========================================================
+   BẠN CÓ THỂ THÊM DỮ LIỆU VÀO ĐÂY.
+   ========================================================= */
+
+const SEARCH_DATA = [
+
+  {
+    id: 1,
+    title: "KAISOUL AI",
+    category: "AI",
+    description: "Chatbot AI bình thường của KAISOUL.",
+    keywords: [
+      "ai",
+      "chatbot",
+      "gemini",
+      "kaisoul ai"
+    ]
+  },
+
+  {
+    id: 2,
+    title: "Máy tính",
+    category: "Calculator",
+    description: "Máy tính toán cơ bản.",
+    keywords: [
+      "tính toán",
+      "calculator",
+      "máy tính",
+      "cộng",
+      "trừ",
+      "nhân",
+      "chia"
+    ]
+  },
+
+  {
+    id: 3,
+    title: "Giờ quốc tế",
+    category: "World Clock",
+    description: "Theo dõi giờ hiện tại của nhiều thành phố.",
+    keywords: [
+      "giờ",
+      "giờ quốc tế",
+      "timezone",
+      "clock",
+      "tokyo",
+      "london",
+      "new york"
+    ]
+  },
+
+  {
+    id: 4,
+    title: "JSON Formatter",
+    category: "Developer",
+    description: "Format và kiểm tra dữ liệu JSON.",
+    keywords: [
+      "json",
+      "formatter",
+      "developer"
+    ]
+  },
+
+  {
+    id: 5,
+    title: "UUID Generator",
+    category: "Developer",
+    description: "Tạo UUID ngẫu nhiên.",
+    keywords: [
+      "uuid",
+      "generator",
+      "developer"
+    ]
+  },
+
+  {
+    id: 6,
+    title: "Base64",
+    category: "Developer",
+    description: "Encode và decode Base64.",
+    keywords: [
+      "base64",
+      "encode",
+      "decode"
+    ]
+  },
+
+  {
+    id: 7,
+    title: "Bê tông",
+    category: "Construction",
+    description: "Tính thể tích bê tông.",
+    keywords: [
+      "bê tông",
+      "concrete",
+      "m3",
+      "thể tích"
+    ]
+  },
+
+  {
+    id: 8,
+    title: "Thép",
+    category: "Construction",
+    description: "Tính khối lượng thép.",
+    keywords: [
+      "thép",
+      "steel",
+      "kg",
+      "khối lượng"
+    ]
+  },
+
+  {
+    id: 9,
+    title: "Đào đất",
+    category: "Construction",
+    description: "Tính khối lượng đào đất.",
+    keywords: [
+      "đào",
+      "đào đất",
+      "đất",
+      "khối lượng"
+    ]
+  }
+
+];
+
+
+/* =========================================================
+   CITY DATA
+   ========================================================= */
+
+const CITY_DATABASE = [
+
+  {
+    name: "Ho Chi Minh",
+    country: "Vietnam",
+    flag: "🇻🇳",
+    timezone: "Asia/Ho_Chi_Minh"
+  },
+
+  {
+    name: "Hanoi",
+    country: "Vietnam",
+    flag: "🇻🇳",
+    timezone: "Asia/Ho_Chi_Minh"
+  },
+
+  {
+    name: "Tokyo",
+    country: "Japan",
+    flag: "🇯🇵",
+    timezone: "Asia/Tokyo"
+  },
+
+  {
+    name: "Seoul",
+    country: "South Korea",
+    flag: "🇰🇷",
+    timezone: "Asia/Seoul"
+  },
+
+  {
+    name: "Singapore",
+    country: "Singapore",
+    flag: "🇸🇬",
+    timezone: "Asia/Singapore"
+  },
+
+  {
+    name: "Bangkok",
+    country: "Thailand",
+    flag: "🇹🇭",
+    timezone: "Asia/Bangkok"
+  },
+
+  {
+    name: "Beijing",
+    country: "China",
+    flag: "🇨🇳",
+    timezone: "Asia/Shanghai"
+  },
+
+  {
+    name: "Hong Kong",
+    country: "Hong Kong",
+    flag: "🇭🇰",
+    timezone: "Asia/Hong_Kong"
+  },
+
+  {
+    name: "Dubai",
+    country: "United Arab Emirates",
+    flag: "🇦🇪",
+    timezone: "Asia/Dubai"
+  },
+
+  {
+    name: "London",
+    country: "United Kingdom",
+    flag: "🇬🇧",
+    timezone: "Europe/London"
+  },
+
+  {
+    name: "Paris",
+    country: "France",
+    flag: "🇫🇷",
+    timezone: "Europe/Paris"
+  },
+
+  {
+    name: "Berlin",
+    country: "Germany",
+    flag: "🇩🇪",
+    timezone: "Europe/Berlin"
+  },
+
+  {
+    name: "New York",
+    country: "United States",
+    flag: "🇺🇸",
+    timezone: "America/New_York"
+  },
+
+  {
+    name: "Los Angeles",
+    country: "United States",
+    flag: "🇺🇸",
+    timezone: "America/Los_Angeles"
+  },
+
+  {
+    name: "Chicago",
+    country: "United States",
+    flag: "🇺🇸",
+    timezone: "America/Chicago"
+  },
+
+  {
+    name: "Toronto",
+    country: "Canada",
+    flag: "🇨🇦",
+    timezone: "America/Toronto"
+  },
+
+  {
+    name: "Sydney",
+    country: "Australia",
+    flag: "🇦🇺",
+    timezone: "Australia/Sydney"
+  },
+
+  {
+    name: "Melbourne",
+    country: "Australia",
+    flag: "🇦🇺",
+    timezone: "Australia/Melbourne"
+  }
+
+];
+
+
+/* =========================================================
+   DOM
+   ========================================================= */
+
+const $ = (selector) => document.querySelector(selector);
+
+const $$ = (selector) => [
+  ...document.querySelectorAll(selector)
+];
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+let toastTimer = null;
+
+function toast(message) {
+
+  const el = $("#toast");
+
+  el.textContent = message;
+
+  el.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(() => {
+    el.classList.remove("show");
+  }, 2300);
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+function navigate(pageName) {
+
+  $$(".page").forEach(page => {
+    page.classList.remove("active");
+  });
+
+  const page = $(`#${pageName}Page`);
+
+  if (page) {
+    page.classList.add("active");
+  }
+
+  $$(".nav-btn").forEach(btn => {
+    btn.classList.toggle(
+      "active",
+      btn.dataset.page === pageName
+    );
+  });
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+  if (pageName === "clock") {
+    renderClocks();
+  }
+}
+
+
+/* =========================================================
+   ADD NAV BUTTONS DYNAMICALLY
+   ========================================================= */
+
+function createNavigation() {
+
+  const nav = document.createElement("nav");
+
+  nav.className = "bottom-nav";
+
+  nav.innerHTML = `
+
+    <button class="nav-btn active" data-page="home">
+      <span class="nav-icon">🏠</span>
+      <span>Home</span>
+    </button>
+
+    <button class="nav-btn" data-page="calculator">
+      <span class="nav-icon">🧮</span>
+      <span>Tính toán</span>
+    </button>
+
+    <button class="nav-btn" data-page="clock">
+      <span class="nav-icon">🌍</span>
+      <span>Giờ</span>
+    </button>
+
+    <button class="nav-btn" data-page="tools">
+      <span class="nav-icon">🛠️</span>
+      <span>Tools</span>
+    </button>
+
+    <button class="nav-btn" data-page="ai">
+      <span class="nav-icon">🤖</span>
+      <span>AI</span>
+    </button>
+
+  `;
+
+  document.body.appendChild(nav);
+
+  $$(".nav-btn").forEach(btn => {
+
+    btn.addEventListener("click", () => {
+      navigate(btn.dataset.page);
+    });
+
+  });
+
+}
+
+
+/* =========================================================
+   HOME TOOL CARDS
+   ========================================================= */
+
+function setupToolCards() {
+
+  $$("[data-page]").forEach(card => {
+
+    if (
+      card.classList.contains("nav-btn")
+    ) {
+      return;
+    }
+
+    card.addEventListener("click", () => {
+
+      const page = card.dataset.page;
+
+      if (page) {
+        navigate(page);
+      }
+
+    });
+
+  });
+
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+function normalizeText(value) {
+
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+
+}
+
+
+function searchKaisoul(query) {
+
+  const q = normalizeText(query).trim();
+
+  if (!q) {
+    return [];
+  }
+
+  const terms = q.split(/\s+/);
+
+  return SEARCH_DATA
+    .map(item => {
+
+      const text = normalizeText(
+        [
+          item.title,
+          item.category,
+          item.description,
+          ...(item.keywords || [])
+        ].join(" ")
+      );
+
+      let score = 0;
+
+      if (
+        normalizeText(item.title).includes(q)
+      ) {
+        score += 100;
+      }
+
+      if (
+        normalizeText(item.category).includes(q)
+      ) {
+        score += 40;
+      }
+
+      if (
+        normalizeText(item.description).includes(q)
+      ) {
+        score += 20;
+      }
+
+      for (const term of terms) {
+
+        if (text.includes(term)) {
+          score += 10;
+        }
+
+      }
+
+      return {
+        item,
+        score
+      };
+
+    })
+    .filter(result => result.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map(result => result.item);
+
+}
+
+
+function renderSearchResults(query) {
+
+  const container = $("#searchResults");
+
+  const results = searchKaisoul(query);
+
+  if (!query.trim()) {
+
+    container.innerHTML = "";
+
+    $("#clearSearch").style.display = "none";
+
+    return;
+  }
+
+  $("#clearSearch").style.display = "block";
+
+  if (!results.length) {
+
+    container.innerHTML = `
+      <div class="search-result">
+        <div class="search-result-title">
+          Không tìm thấy kết quả
+        </div>
+        <div class="search-result-desc">
+          KAISOUL chưa có dữ liệu phù hợp với từ khóa này.
+        </div>
+      </div>
+    `;
+
+    return;
+  }
+
+  container.innerHTML = results
+    .slice(0, 8)
+    .map(item => `
+
+      <div
+        class="search-result"
+        data-result-id="${item.id}"
+      >
+
+        <div class="search-result-title">
+          ${escapeHTML(item.title)}
+        </div>
+
+        <div class="search-result-desc">
+          ${escapeHTML(item.description)}
+        </div>
+
+        <div class="search-result-meta">
+          ${escapeHTML(item.category)}
+        </div>
+
+      </div>
+
+    `)
+    .join("");
+
+  $$(".search-result[data-result-id]")
+    .forEach(result => {
+
+      result.addEventListener("click", () => {
+
+        const id = Number(
+          result.dataset.resultId
+        );
+
+        const item = SEARCH_DATA.find(
+          x => x.id === id
+        );
+
+        if (!item) {
+          return;
+        }
+
+        openSearchResult(item);
+
+      });
+
+    });
+
+}
+
+
+function openSearchResult(item) {
+
+  const category = normalizeText(item.category);
+
+  if (category === "ai") {
+    navigate("ai");
+    $("#chatInput").focus();
+  }
+
+  else if (category === "calculator") {
+    navigate("calculator");
+  }
+
+  else if (category === "world clock") {
+    navigate("clock");
+  }
+
+  else {
+    navigate("tools");
+  }
+
+  toast(item.title);
+
+}
+
+
+function escapeHTML(value) {
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+$("#globalSearch").addEventListener(
+  "input",
+  event => renderSearchResults(event.target.value)
+);
+
+
+$("#clearSearch").addEventListener(
+  "click",
+  () => {
+
+    $("#globalSearch").value = "";
+
+    renderSearchResults("");
+
+    $("#globalSearch").focus();
+
+  }
+);
+
+
+/* =========================================================
+   CALCULATOR
+   ========================================================= */
+
+let calcExpression = "";
+
+function updateCalculator() {
+
+  $("#calcValue").textContent =
+    calcExpression || "0";
+
+}
+
+
+function safeCalculate(expression) {
+
+  if (!expression) {
+    return "";
+  }
+
+  /*
+    Chỉ cho phép số và các toán tử cơ bản.
+    Không cho phép arbitrary JavaScript.
+  */
+
+  if (!/^[0-9+\-*/%.()\s]+$/.test(expression)) {
+    throw new Error("Biểu thức không hợp lệ.");
+  }
+
+  const result = Function(
+    `"use strict"; return (${expression})`
+  )();
+
+  if (
+    typeof result !== "number" ||
+    !Number.isFinite(result)
+  ) {
+    throw new Error("Không thể tính biểu thức.");
+  }
+
+  return String(result);
+
+}
+
+
+$$("[data-calc]").forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    const value = button.dataset.calc;
+
+    try {
+
+      if (value === "clear") {
+
+        calcExpression = "";
+
+      }
+
+      else if (value === "back") {
+
+        calcExpression =
+          calcExpression.slice(0, -1);
+
+      }
+
+      else if (value === "=") {
+
+        const result =
+          safeCalculate(calcExpression);
+
+        $("#calcExpression").textContent =
+          calcExpression;
+
+        calcExpression = result;
+
+      }
+
+      else {
+
+        calcExpression += value;
+
+      }
+
+      updateCalculator();
+
+    }
+
+    catch (error) {
+
+      calcExpression = "";
+
+      $("#calcValue").textContent = "Error";
+
+      toast(error.message);
+
+    }
+
+  });
+
+});
+
+
+/* =========================================================
+   WORLD CLOCK
+   ========================================================= */
+
+const DEFAULT_CITIES = [
+
+  "Asia/Ho_Chi_Minh",
+  "Asia/Tokyo",
+  "Asia/Seoul",
+  "Europe/London",
+  "America/New_York"
+
+];
+
+
+function getSavedCities() {
+
+  try {
+
+    const data =
+      localStorage.getItem(
+        "kaisoul_cities"
+      );
+
+    if (!data) {
+      return DEFAULT_CITIES;
+    }
+
+    const parsed = JSON.parse(data);
+
+    if (
+      !Array.isArray(parsed) ||
+      !parsed.length
+    ) {
+      return DEFAULT_CITIES;
+    }
+
+    return parsed;
+
+  }
+
+  catch {
+
+    return DEFAULT_CITIES;
+
+  }
+
+}
+
+
+let selectedCities = getSavedCities();
+
+
+function saveCities() {
+
+  localStorage.setItem(
+    "kaisoul_cities",
+    JSON.stringify(selectedCities)
+  );
+
+}
+
+
+function getCityByTimezone(timezone) {
+
+  return CITY_DATABASE.find(
+    city => city.timezone === timezone
+  );
+
+}
+
+
+function renderClocks() {
+
+  const grid = $("#clockGrid");
+
+  if (!selectedCities.length) {
+
+    grid.innerHTML = `
+      <div class="card">
+        Chưa có thành phố nào.
+      </div>
+    `;
+
+    return;
+  }
+
+  grid.innerHTML = selectedCities
+    .map(timezone => {
+
+      const city =
+        getCityByTimezone(timezone);
+
+      if (!city) {
+        return "";
+      }
+
+      return `
+
+        <div class="card clock-card">
+
+          <button
+            class="remove-city"
+            data-remove-city="${escapeHTML(timezone)}"
+            title="Xóa"
+          >
+            ×
+          </button>
+
+          <div class="clock-city">
+            ${city.flag} ${escapeHTML(city.name)}
+          </div>
+
+          <div
+            class="clock-time"
+            data-clock="${escapeHTML(timezone)}"
+          >
+            --
+          </div>
+
+          <div
+            class="clock-date"
+            data-date="${escapeHTML(timezone)}"
+          >
+            --
+          </div>
+
+          <div class="clock-zone">
+            ${escapeHTML(city.country)}
+          </div>
+
+        </div>
+
+      `;
+
+    })
+    .join("");
+
+  updateClocks();
+
+  $$("[data-remove-city]").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      const timezone =
+        button.dataset.removeCity;
+
+      selectedCities =
+        selectedCities.filter(
+          x => x !== timezone
+        );
+
+      saveCities();
+
+      renderClocks();
+
+      toast("Đã xóa thành phố");
+
+    });
+
+  });
+
+}
+
+
+function updateClocks() {
+
+  const now = new Date();
+
+  $$("[data-clock]").forEach(element => {
+
+    const timezone =
+      element.dataset.clock;
+
+    try {
+
+      element.textContent =
+        new Intl.DateTimeFormat(
+          "vi-VN",
+          {
+            timeZone: timezone,
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false
+          }
+        ).format(now);
+
+    }
+
+    catch {
+
+      element.textContent = "--";
+
+    }
+
+  });
+
+
+  $$("[data-date]").forEach(element => {
+
+    const timezone =
+      element.dataset.date;
+
+    try {
+
+      element.textContent =
+        new Intl.DateTimeFormat(
+          "vi-VN",
+          {
+            timeZone: timezone,
+            weekday: "short",
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+          }
+        ).format(now);
+
+    }
+
+    catch {
+
+      element.textContent = "--";
+
+    }
+
+  });
+
+}
+
+
+setInterval(updateClocks, 1000);
+
+
+/* =========================================================
+   CITY MODAL
+   ========================================================= */
+
+function renderCityList(query = "") {
+
+  const q = normalizeText(query);
+
+  const existing =
+    new Set(selectedCities);
+
+  const cities =
+    CITY_DATABASE.filter(city => {
+
+      const text = normalizeText(
+        `${city.name} ${city.country}`
+      );
+
+      return text.includes(q);
+
+    });
+
+  $("#cityList").innerHTML =
+    cities.map(city => {
+
+      const added =
+        existing.has(city.timezone);
+
+      return `
+
+        <div class="city-option">
+
+          <div>
+            <strong>
+              ${city.flag} ${escapeHTML(city.name)}
+            </strong>
+
+            <div style="color:var(--muted);font-size:11px;margin-top:3px">
+              ${escapeHTML(city.country)}
+            </div>
+          </div>
+
+          <button
+            data-add-city="${escapeHTML(city.timezone)}"
+            ${added ? "disabled" : ""}
+          >
+            ${added ? "Đã thêm" : "Thêm"}
+          </button>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+
+  $$("[data-add-city]").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      const timezone =
+        button.dataset.addCity;
+
+      if (
+        !selectedCities.includes(timezone)
+      ) {
+
+        selectedCities.push(timezone);
+
+        saveCities();
+
+        renderClocks();
+
+        renderCityList(
+          $("#citySearch").value
+        );
+
+        toast("Đã thêm thành phố");
+
+      }
+
+    });
+
+  });
+
+}
+
+
+function openCityModal() {
+
+  $("#cityModal").classList.add("open");
+
+  $("#citySearch").value = "";
+
+  renderCityList();
+
+  setTimeout(() => {
+    $("#citySearch").focus();
+  }, 100);
+
+}
+
+
+function closeCityModal() {
+
+  $("#cityModal").classList.remove("open");
+
+}
+
+
+$("#addCityBtn").addEventListener(
+  "click",
+  openCityModal
+);
+
+$("#closeCityModal").addEventListener(
+  "click",
+  closeCityModal
+);
+
+$("#cityModal").addEventListener(
+  "click",
+  event => {
+
+    if (
+      event.target === $("#cityModal")
+    ) {
+      closeCityModal();
+    }
+
+  }
+);
+
+$("#citySearch").addEventListener(
+  "input",
+  event => {
+    renderCityList(event.target.value);
+  }
+);
+
+
+/* =========================================================
+   AI CHAT
+   ========================================================= */
+
+let chatHistory = [];
+
+
+function addMessage(role, text) {
+
+  const container =
+    $("#chatMessages");
+
+  const message =
+    document.createElement("div");
+
+  message.className =
+    `message ${role}`;
+
+  const bubble =
+    document.createElement("div");
+
+  bubble.className = "bubble";
+
+  bubble.innerHTML =
+    formatAIText(text);
+
+  message.appendChild(bubble);
+
+  container.appendChild(message);
+
+  container.scrollTop =
+    container.scrollHeight;
+
+}
+
+
+function formatAIText(text) {
+
+  /*
+    Escape HTML trước.
+    Sau đó hỗ trợ code block đơn giản.
+  */
+
+  let safe = escapeHTML(text);
+
+  safe = safe.replace(
+    /```([\s\S]*?)```/g,
+    "<pre>$1</pre>"
+  );
+
+  safe = safe.replace(
+    /`([^`]+)`/g,
+    "<code>$1</code>"
+  );
+
+  safe = safe.replace(
+    /\*\*(.*?)\*\*/g,
+    "<strong>$1</strong>"
+  );
+
+  safe = safe.replace(
+    /\n/g,
+    "<br>"
+  );
+
+  return safe;
+
+}
+
+
+async function sendChat() {
+
+  const input =
+    $("#chatInput");
+
+  const message =
+    input.value.trim();
+
+  if (!message) {
+    return;
+  }
+
+  addMessage("user", message);
+
+  input.value = "";
+
+  input.style.height = "48px";
+
+  $("#typingIndicator").style.display =
+    "block";
+
+  $("#sendChatBtn").disabled = true;
+
+  chatHistory.push({
+    role: "user",
+    text: message
+  });
+
+
+  try {
+
+    const response =
+      await fetch(
+        KAISOUL_CONFIG.apiEndpoint,
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            message,
+            history: chatHistory
+          })
+        }
+      );
+
+
+    const data =
+      await response.json().catch(
+        () => ({})
+      );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.error ||
+        `Server error ${response.status}`
+      );
+
+    }
+
+
+    if (
+      !data.success ||
+      typeof data.reply !== "string"
+    ) {
+
+      throw new Error(
+        data.error ||
+        "Server không trả về câu trả lời hợp lệ."
+      );
+
+    }
+
+
+    addMessage(
+      "assistant",
+      data.reply
+    );
+
+
+    chatHistory.push({
+      role: "model",
+      text: data.reply
+    });
+
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "KAISOUL AI ERROR:",
+      error
+    );
+
+    addMessage(
+      "assistant",
+      "Không thể kết nối KAISOUL AI.\n\n" +
+      error.message
+    );
+
+  }
+
+  finally {
+
+    $("#typingIndicator").style.display =
+      "none";
+
+    $("#sendChatBtn").disabled =
+      false;
+
+    input.focus();
+
+  }
+
+}
+
+
+$("#sendChatBtn").addEventListener(
+  "click",
+  sendChat
+);
+
+
+$("#chatInput").addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "Enter" &&
+      !event.shiftKey
+    ) {
+
+      event.preventDefault();
+
+      sendChat();
+
+    }
+
+  }
+);
+
+
+$("#chatInput").addEventListener(
+  "input",
+  event => {
+
+    event.target.style.height =
+      "48px";
+
+    event.target.style.height =
+      Math.min(
+        event.target.scrollHeight,
+        150
+      ) + "px";
+
+  }
+);
+
+
+$("#newChatBtn").addEventListener(
+  "click",
+  () => {
+
+    chatHistory = [];
+
+    $("#chatMessages").innerHTML = `
+
+      <div class="message">
+
+        <div class="bubble">
+          Chat mới đã được tạo.<br><br>
+          Tôi là <strong>KAISOUL AI</strong>.
+          Bạn muốn hỏi gì?
+        </div>
+
+      </div>
+
+    `;
+
+    toast("Đã tạo chat mới");
+
+  }
+);
+
+
+/* =========================================================
+   SERVER HEALTH
+   ========================================================= */
+
+async function checkServer() {
+
+  const status =
+    $("#serverStatus");
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/health",
+        {
+          cache: "no-store"
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if (
+      response.ok &&
+      data.success
+    ) {
+
+      status.textContent =
+        "Server online";
+
+    }
+
+    else {
+
+      status.textContent =
+        "Server error";
+
+    }
+
+  }
+
+  catch {
+
+    status.textContent =
+      "Frontend mode";
+
+  }
+
+}
+
+
+checkServer();
+
+
+/* =========================================================
+   TOOL MODAL
+   ========================================================= */
+
+function openTool(title, html) {
+
+  $("#toolModalTitle").textContent =
+    title;
+
+  $("#toolModalContent").innerHTML =
+    html;
+
+  $("#toolModal").classList.add("open");
+
+}
+
+
+function closeTool() {
+
+  $("#toolModal").classList.remove("open");
+
+}
+
+
+$("#closeToolModal").addEventListener(
+  "click",
+  closeTool
+);
+
+
+$("#toolModal").addEventListener(
+  "click",
+  event => {
+
+    if (
+      event.target === $("#toolModal")
+    ) {
+      closeTool();
+    }
+
+  }
+);
+
+
+/* =========================================================
+   DEVICE INFO
+   ========================================================= */
+
+$("#deviceInfoBtn").addEventListener(
+  "click",
+  () => {
+
+    openTool(
+      "📱 Device Info",
+      `
+
+        <div class="utility-box">
+
+          <p><strong>Platform:</strong>
+          ${escapeHTML(navigator.platform)}</p>
+
+          <br>
+
+          <p><strong>User-Agent:</strong></p>
+
+          <div class="result-box">
+            ${escapeHTML(navigator.userAgent)}
+          </div>
+
+          <br>
+
+          <p><strong>Language:</strong>
+          ${escapeHTML(navigator.language)}</p>
+
+          <br>
+
+          <p><strong>Online:</strong>
+          ${navigator.onLine ? "Có" : "Không"}</p>
+
+          <br>
+
+          <p><strong>CPU cores:</strong>
+          ${navigator.hardwareConcurrency || "Không rõ"}</p>
+
+        </div>
+
+      `
+    );
+
+  }
+);
+
+
+/* =========================================================
+   BATTERY
+   ========================================================= */
+
+$("#batteryBtn").addEventListener(
+  "click",
+  async () => {
+
+    if (!navigator.getBattery) {
+
+      openTool(
+        "🔋 Battery",
+        `
+          <div class="utility-box">
+            Trình duyệt không hỗ trợ Battery API.
+          </div>
+        `
+      );
+
+      return;
+    }
+
+
+    try {
+
+      const battery =
+        await navigator.getBattery();
+
+      openTool(
+        "🔋 Battery",
+        `
+
+          <div class="utility-box">
+
+            <p>
+              <strong>Mức pin:</strong>
+              ${Math.round(
+                battery.level * 100
+              )}%
+            </p>
+
+            <br>
+
+            <p>
+              <strong>Đang sạc:</strong>
+              ${battery.charging ? "Có" : "Không"}
+            </p>
+
+          </div>
+
+        `
+      );
+
+    }
+
+    catch {
+
+      toast("Không thể đọc thông tin pin");
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   SCREEN
+   ========================================================= */
+
+$("#screenBtn").addEventListener(
+  "click",
+  () => {
+
+    openTool(
+      "🖥️ Screen Test",
+      `
+
+        <div class="utility-box">
+
+          <p>
+            <strong>Screen:</strong>
+            ${screen.width} × ${screen.height}
+          </p>
+
+          <br>
+
+          <p>
+            <strong>Viewport:</strong>
+            ${window.innerWidth} × ${window.innerHeight}
+          </p>
+
+          <br>
+
+          <p>
+            <strong>Pixel Ratio:</strong>
+            ${window.devicePixelRatio}
+          </p>
+
+        </div>
+
+      `
+    );
+
+  }
+);
+
+
+/* =========================================================
+   TOUCH
+   ========================================================= */
+
+$("#touchBtn").addEventListener(
+  "click",
+  () => {
+
+    openTool(
+      "👆 Touch Test",
+      `
+
+        <div class="utility-box">
+
+          <p>
+            Chạm vào vùng bên dưới.
+          </p>
+
+          <div
+            id="touchArea"
+            style="
+              height:180px;
+              margin-top:15px;
+              border:2px dashed var(--border);
+              border-radius:15px;
+              display:grid;
+              place-items:center;
+              color:var(--muted);
+            "
+          >
+            Chạm vào đây
+          </div>
+
+        </div>
+
+      `
+    );
+
+
+    const area =
+      $("#touchArea");
+
+    area.addEventListener(
+      "pointerdown",
+      event => {
+
+        area.textContent =
+          `Đã nhận touch: ${Math.round(event.clientX)}, ${Math.round(event.clientY)}`;
+
+        area.style.color =
+          "var(--success)";
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   INTERNET STATUS
+   ========================================================= */
+
+$("#onlineBtn").addEventListener(
+  "click",
+  () => {
+
+    openTool(
+      "🌐 Internet Status",
+      `
+
+        <div class="utility-box">
+
+          <p style="font-size:20px">
+            ${navigator.onLine
+              ? "🟢 Đang online"
+              : "🔴 Offline"}
+          </p>
+
+        </div>
+
+      `
+    );
+
+  }
+);
+
+
+/* =========================================================
+   USER AGENT
+   ========================================================= */
+
+$("#userAgentBtn").addEventListener(
+  "click",
+  () => {
+
+    openTool(
+      "🧩 User-Agent",
+      `
+
+        <div class="utility-box">
+
+          <div class="result-box">
+            ${escapeHTML(navigator.userAgent)}
+          </div>
+
+          <br>
+
+          <button
+            class="btn btn-primary"
+            id="copyUA"
+          >
+            Copy
+          </button>
+
+        </div>
+
+      `
+    );
+
+
+    $("#copyUA").addEventListener(
+      "click",
+      async () => {
+
+        await navigator.clipboard.writeText(
+          navigator.userAgent
+        );
+
+        toast("Đã copy");
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   PING
+   ========================================================= */
+
+$("#pingBtn").addEventListener(
+  "click",
+  () => {
+
+    openTool(
+      "📡 Ping",
+      `
+
+        <div class="utility-box">
+
+          <input
+            id="pingUrl"
+            class="input"
+            value="/api/health"
+            placeholder="URL"
+          >
+
+          <br><br>
+
+          <button
+            id="runPing"
+            class="btn btn-primary"
+          >
+            Ping
+          </button>
+
+          <div
+            id="pingResult"
+            class="result-box"
+          >
+            Chưa kiểm tra.
+          </div>
+
+        </div>
+
+      `
+    );
+
+
+    $("#runPing").addEventListener(
+      "click",
+      async () => {
+
+        const url =
+          $("#pingUrl").value.trim();
+
+        if (!url) {
+          return;
+        }
+
+        const start =
+          performance.now();
+
+        try {
+
+          await fetch(
+            url,
+            {
+              cache: "no-store"
+            }
+          );
+
+          const ms =
+            Math.round(
+              performance.now() - start
+            );
+
+          $("#pingResult").textContent =
+            `Response time: ${ms} ms`;
+
+        }
+
+        catch (error) {
+
+          $("#pingResult").textContent =
+            "Request failed: " +
+            error.message;
+
+        }
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   HTTP STATUS
+   ========================================================= */
+
+$("#httpBtn").addEventListener(
+  "click",
+  () => {
+
+    openTool(
+      "🔗 HTTP Status",
+      `
+
+        <div class="utility-box">
+
+          <input
+            id="httpUrl"
+            class="input"
+            value="/api/health"
+          >
+
+          <br><br>
+
+          <button
+            id="runHttp"
+            class="btn btn-primary"
+          >
+            Kiểm tra
+          </button>
+
+          <div
+            id="httpResult"
+            class="result-box"
+          >
+            Chưa kiểm tra.
+          </div>
+
+        </div>
+
+      `
+    );
+
+
+    $("#runHttp").addEventListener(
+      "click",
+      async () => {
+
+        try {
+
+          const response =
+            await fetch(
+              $("#httpUrl").value.trim(),
+              {
+                cache: "no-store"
+              }
+            );
+
+          $("#httpResult").textContent =
+            `HTTP ${response.status} ${response.statusText}`;
+
+        }
+
+        catch (error) {
+
+          $("#httpResult").textContent =
+            error.message;
+
+        }
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   JSON FORMATTER
+   ========================================================= */
+
+$("#jsonFormatterBtn").addEventListener(
+  "click",
+  () => {
+
+    openTool(
+      "👨‍💻 JSON Formatter",
+      `
+
+        <div class="utility-box">
+
+          <textarea
+            id="jsonInput"
+            class="textarea"
+            placeholder='{"name":"KAISOUL","version":1}'
+          ></textarea>
+
+          <br><br>
+
+          <button
+            id="formatJson"
+            class="btn btn-primary"
+          >
+            Format JSON
+          </button>
+
+          <div
+            id="jsonResult"
+            class="result-box"
+          >
+          </div>
+
+        </div>
+
+      `
+    );
+
+
+    $("#formatJson").addEventListener(
+      "click",
+      () => {
+
+        try {
+
+          const value =
+            JSON.parse(
+              $("#jsonInput").value
+            );
+
+          $("#jsonResult").textContent =
+            JSON.stringify(
+              value,
+              null,
+              2
+            );
+
+        }
+
+        catch (error) {
+
+          $("#jsonResult").textContent =
+            "JSON không hợp lệ:\n" +
+            error.message;
+
+        }
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   BASE64
+   ========================================================= */
+
+$("#base64Btn").addEventListener(
+  "click",
+  () => {
+
+    openTool(
+      "64 Base64",
+      `
+
+        <div class="utility-box">
+
+          <textarea
+            id="base64Input"
+            class="textarea"
+            placeholder="Nhập nội dung..."
+          ></textarea>
+
+          <br><br>
+
+          <div class="form-row">
+
+            <button
+              id="base64Encode"
+              class="btn btn-primary"
+            >
+              Encode
+            </button>
+
+            <button
+              id="base64Decode"
+              class="btn"
+            >
+              Decode
+            </button>
+
+          </div>
+
+          <div
+            id="base64Result"
+            class="result-box"
+          >
+          </div>
+
+        </div>
+
+      `
+    );
+
+
+    $("#base64Encode").addEventListener(
+      "click",
+      () => {
+
+        const text =
+          $("#base64Input").value;
+
+        try {
+
+          const encoded =
+            btoa(
+              unescape(
+                encodeURIComponent(text)
+              )
+            );
+
+          $("#base64Result").textContent =
+            encoded;
+
+        }
+
+        catch (error) {
+
+          $("#base64Result").textContent =
+            error.message;
+
+        }
+
+      }
+    );
+
+
+    $("#base64Decode").addEventListener(
+      "click",
+      () => {
+
+        try {
+
+          const decoded =
+            decodeURIComponent(
+              escape(
+                atob(
+                  $("#base64Input").value
+                )
+              )
+            );
+
+          $("#base64Result").textContent =
+            decoded;
+
+        }
+
+        catch {
+
+          $("#base64Result").textContent =
+            "Base64 không hợp lệ.";
+
+        }
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   UUID
+   ========================================================= */
+
+$("#uuidBtn").addEventListener(
+  "click",
+  () => {
+
+    openTool(
+      "🆔 UUID Generator",
+      `
+
+        <div class="utility-box">
+
+          <div
+            id="uuidResult"
+            class="result-box"
+            style="font-size:16px"
+          >
+            ${crypto.randomUUID()}
+          </div>
+
+          <br>
+
+          <button
+            id="newUUID"
+            class="btn btn-primary"
+          >
+            Tạo UUID
+          </button>
+
+          <button
+            id="copyUUID"
+            class="btn"
+          >
+            Copy
+          </button>
+
+        </div>
+
+      `
+    );
+
+
+    $("#newUUID").addEventListener(
+      "click",
+      () => {
+
+        $("#uuidResult").textContent =
+          crypto.randomUUID();
+
+      }
+    );
+
+
+    $("#copyUUID").addEventListener(
+      "click",
+      async () => {
+
+        await navigator.clipboard.writeText(
+          $("#uuidResult").textContent
+        );
+
+        toast("Đã copy UUID");
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   REGEX
+   ========================================================= */
+
+$("#regexBtn").addEventListener(
+  "click",
+  () => {
+
+    openTool(
+      ".* Regex Tester",
+      `
+
+        <div class="utility-box">
+
+          <input
+            id="regexPattern"
+            class="input"
+            placeholder="^[a-z]+$"
+          >
+
+          <br><br>
+
+          <textarea
+            id="regexText"
+            class="textarea"
+            placeholder="Text cần kiểm tra..."
+          ></textarea>
+
+          <br><br>
+
+          <button
+            id="runRegex"
+            class="btn btn-primary"
+          >
+            Test
+          </button>
+
+          <div
+            id="regexResult"
+            class="result-box"
+          >
+          </div>
+
+        </div>
+
+      `
+    );
+
+
+    $("#runRegex").addEventListener(
+      "click",
+      () => {
+
+        try {
+
+          const regex =
+            new RegExp(
+              $("#regexPattern").value
+            );
+
+          const text =
+            $("#regexText").value;
+
+          const match =
+            regex.test(text);
+
+          $("#regexResult").textContent =
+            match
+              ? "MATCH ✓"
+              : "NO MATCH ✕";
+
+        }
+
+        catch (error) {
+
+          $("#regexResult").textContent =
+            "Regex lỗi: " +
+            error.message;
+
+        }
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   CONCRETE CALCULATOR
+   ========================================================= */
+
+$("#concreteBtn").addEventListener(
+  "click",
+  () => {
+
+    openTool(
+      "🧱 Bê tông",
+      `
+
+        <div class="utility-box">
+
+          <div class="form-row">
+
+            <input
+              id="concreteLength"
+              class="input"
+              type="number"
+              step="any"
+              placeholder="Dài (m)"
+            >
+
+            <input
+              id="concreteWidth"
+              class="input"
+              type="number"
+              step="any"
+              placeholder="Rộng (m)"
+            >
+
+          </div>
+
+          <input
+            id="concreteHeight"
+            class="input"
+            type="number"
+            step="any"
+            placeholder="Cao / dày (m)"
+          >
+
+          <br><br>
+
+          <button
+            id="calculateConcrete"
+            class="btn btn-primary"
+          >
+            Tính
+          </button>
+
+          <div
+            id="concreteResult"
+            class="result-box"
+          >
+          </div>
+
+        </div>
+
+      `
+    );
+
+
+    $("#calculateConcrete").addEventListener(
+      "click",
+      () => {
+
+        const l =
+          Number($("#concreteLength").value);
+
+        const w =
+          Number($("#concreteWidth").value);
+
+        const h =
+          Number($("#concreteHeight").value);
+
+        const volume =
+          l * w * h;
+
+        if (
+          !Number.isFinite(volume) ||
+          volume < 0
+        ) {
+
+          $("#concreteResult").textContent =
+            "Dữ liệu không hợp lệ.";
+
+          return;
+
+        }
+
+        $("#concreteResult").textContent =
+          `Thể tích bê tông: ${volume.toFixed(3)} m³`;
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   STEEL CALCULATOR
+   ========================================================= */
+
+$("#steelBtn").addEventListener(
+  "click",
+  () => {
+
+    openTool(
+      "🔩 Thép",
+      `
+
+        <div class="utility-box">
+
+          <p style="color:var(--muted);font-size:12px">
+            Công thức gần đúng:
+            khối lượng = d² × L × 0.006165
+          </p>
+
+          <br>
+
+          <div class="form-row">
+
+            <input
+              id="steelDiameter"
+              class="input"
+              type="number"
+              step="any"
+              placeholder="Đường kính (mm)"
+            >
+
+            <input
+              id="steelLength"
+              class="input"
+              type="number"
+              step="any"
+              placeholder="Chiều dài (m)"
+            >
+
+          </div>
+
+          <button
+            id="calculateSteel"
+            class="btn btn-primary"
+          >
+            Tính
+          </button>
+
+          <div
+            id="steelResult"
+            class="result-box"
+          >
+          </div>
+
+        </div>
+
+      `
+    );
+
+
+    $("#calculateSteel").addEventListener(
+      "click",
+      () => {
+
+        const d =
+          Number($("#steelDiameter").value);
+
+        const length =
+          Number($("#steelLength").value);
+
+        const kg =
+          d * d *
+          length *
+          0.006165;
+
+        if (
+          !Number.isFinite(kg) ||
+          kg < 0
+        ) {
+
+          $("#steelResult").textContent =
+            "Dữ liệu không hợp lệ.";
+
+          return;
+
+        }
+
+        $("#steelResult").textContent =
+          `Khối lượng thép ≈ ${kg.toFixed(3)} kg`;
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   EXCAVATION
+   ========================================================= */
+
+$("#excavationBtn").addEventListener(
+  "click",
+  () => {
+
+    openTool(
+      "⛏️ Đào đất",
+      `
+
+        <div class="utility-box">
+
+          <div class="form-row">
+
+            <input
+              id="excavationLength"
+              class="input"
+              type="number"
+              step="any"
+              placeholder="Dài (m)"
+            >
+
+            <input
+              id="excavationWidth"
+              class="input"
+              type="number"
+              step="any"
+              placeholder="Rộng (m)"
+            >
+
+          </div>
+
+          <input
+            id="excavationDepth"
+            class="input"
+            type="number"
+            step="any"
+            placeholder="Sâu (m)"
+          >
+
+          <br>
+
+          <button
+            id="calculateExcavation"
+            class="btn btn-primary"
+          >
+            Tính
+          </button>
+
+          <div
+            id="excavationResult"
+            class="result-box"
+          >
+          </div>
+
+        </div>
+
+      `
+    );
+
+
+    $("#calculateExcavation").addEventListener(
+      "click",
+      () => {
+
+        const l =
+          Number($("#excavationLength").value);
+
+        const w =
+          Number($("#excavationWidth").value);
+
+        const d =
+          Number($("#excavationDepth").value);
+
+        const volume =
+          l * w * d;
+
+        if (
+          !Number.isFinite(volume) ||
+          volume < 0
+        ) {
+
+          $("#excavationResult").textContent =
+            "Dữ liệu không hợp lệ.";
+
+          return;
+
+        }
+
+        $("#excavationResult").textContent =
+          `Khối lượng đào ≈ ${volume.toFixed(3)} m³`;
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   VOLUME TOOL
+   ========================================================= */
+
+$("#volumeBtn").addEventListener(
+  "click",
+  () => {
+
+    openTool(
+      "📐 Khối lượng",
+      `
+
+        <div class="utility-box">
+
+          <p>
+            Hình hộp chữ nhật:
+            V = Dài × Rộng × Cao
+          </p>
+
+          <br>
+
+          <div class="form-row">
+
+            <input
+              id="volL"
+              class="input"
+              type="number"
+              step="any"
+              placeholder="Dài"
+            >
+
+            <input
+              id="volW"
+              class="input"
+              type="number"
+              step="any"
+              placeholder="Rộng"
+            >
+
+          </div>
+
+          <input
+            id="volH"
+            class="input"
+            type="number"
+            step="any"
+            placeholder="Cao"
+          >
+
+          <br>
+
+          <button
+            id="calculateVolume"
+            class="btn btn-primary"
+          >
+            Tính
+          </button>
+
+          <div
+            id="volumeResult"
+            class="result-box"
+          >
+          </div>
+
+        </div>
+
+      `
+    );
+
+
+    $("#calculateVolume").addEventListener(
+      "click",
+      () => {
+
+        const l =
+          Number($("#volL").value);
+
+        const w =
+          Number($("#volW").value);
+
+        const h =
+          Number($("#volH").value);
+
+        const volume =
+          l * w * h;
+
+        $("#volumeResult").textContent =
+          Number.isFinite(volume)
+            ? `V = ${volume.toFixed(3)}`
+            : "Dữ liệu không hợp lệ.";
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   GLOBAL KEYBOARD
+   ========================================================= */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "Escape"
+    ) {
+
+      $("#cityModal")
+        .classList.remove("open");
+
+      $("#toolModal")
+        .classList.remove("open");
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   ERROR BOUNDARY
+   ========================================================= */
+
+window.addEventListener(
+  "error",
+  event => {
+
+    console.error(
+      "KAISOUL ERROR:",
+      event.error
+    );
+
+    $("#errorText").textContent =
+      event.error?.stack ||
+      event.message ||
+      "Unknown error";
+
+    $("#errorOverlay")
+      .classList.add("show");
+
+  }
+);
+
+
+window.addEventListener(
+  "unhandledrejection",
+  event => {
+
+    console.error(
+      "KAISOUL PROMISE ERROR:",
+      event.reason
+    );
+
+    /*
+      Không bật toàn màn hình cho mọi promise error
+      để một lỗi API không làm mất toàn bộ UI.
+    */
+
+  }
+);
+
+
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
+
+function init() {
+
+  createNavigation();
+
+  setupToolCards();
+
+  renderClocks();
+
+  updateCalculator();
+
+  checkServer();
+
+}
+
+
+init();
+
+</script>
+
+</body>
+  </html>
